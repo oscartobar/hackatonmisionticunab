@@ -21,13 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unab.tienda_a_la_mano.entity.DetallePedidoEntity;
 import com.unab.tienda_a_la_mano.entity.PedidoEntity;
 import com.unab.tienda_a_la_mano.entity.TiendaEntity;
 import com.unab.tienda_a_la_mano.service.IDetallePedidoService;
 import com.unab.tienda_a_la_mano.service.IPedidoService;
 import com.unab.tienda_a_la_mano.service.ITiendaService;
-import com.unab.tienda_a_la_mano.serviceImplement.TiendaService;
 
 
 @CrossOrigin(origins = "*")

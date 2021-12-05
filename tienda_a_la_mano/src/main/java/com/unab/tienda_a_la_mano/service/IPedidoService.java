@@ -33,5 +33,5 @@ public interface IPedidoService {
 	public Map<String, Object> valoresPedido( Long idpedido );
 	
 	//REQ 21
-	public List<Map<String, Object>> pedidosAnteriores( Long idcliente );
+	//public List<Map<String, Object>> pedidosAnteriores( Long idcliente );
 }

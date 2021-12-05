@@ -71,9 +71,11 @@ public class PedidoService implements IPedidoService{
 	}
 	
 	//REQ 21
+	/*
 	@Override
 	public List<Map<String, Object>> pedidosAnteriores( Long idcliente ){
 		List<PedidoEntity>  p = this.repository.buscarantiguos(idcliente);
+		List<Map<String, Object>> lista = new ArrayList<>();
 		
 		for(PedidoEntity mipedido : p)
 		{
@@ -81,12 +83,12 @@ public class PedidoService implements IPedidoService{
 			respuesta.put("Total Compra", mipedido.getTotal_pedido());
 			respuesta.put("Total Descuentos", mipedido.getTotal_descuento());
 			respuesta.put("Total Impuestos", mipedido.getTotal_impuesto());
-			respuesta.put("Costo Aprox Envio", mipedido.getCosto_envio()
-			
+			respuesta.put("Costo Aprox Envio", mipedido.getCosto_envio());
+			lista.add(respuesta);
 		}
 	
-		return respuesta;
-	}
+	
+*/
 	
 
 }
