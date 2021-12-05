@@ -17,6 +17,7 @@ public interface IKardexService {
 	
 	//Todos los productos disponibles
 	List<KardexEntity> allProductos(Long id);
+
 	
 	//Guardar-actualizar
 	public KardexEntity save(KardexEntity kardexEntity);	

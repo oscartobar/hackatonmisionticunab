@@ -50,6 +50,7 @@ public class ClienteEntity implements Serializable{
 	
 	@Column(name = "sesion",  length = 40, nullable = true)
 	private String sesion;
+
 	
 	@Column(name = "cupo", nullable = true)
 	private Double cupo;
