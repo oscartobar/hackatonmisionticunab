@@ -21,8 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unab.tienda_a_la_mano.entity.DetallePedidoEntity;
 import com.unab.tienda_a_la_mano.entity.PedidoEntity;
+import com.unab.tienda_a_la_mano.entity.TiendaEntity;
+import com.unab.tienda_a_la_mano.service.IDetallePedidoService;
 import com.unab.tienda_a_la_mano.service.IPedidoService;
+import com.unab.tienda_a_la_mano.service.ITiendaService;
+import com.unab.tienda_a_la_mano.serviceImplement.TiendaService;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -32,6 +38,12 @@ public class PedidoController {
 	// Accedemos a los metodos de la interface 
 	@Autowired
 	private IPedidoService service;
+	
+	@Autowired
+	private ITiendaService serviceTienda;
+
+	@Autowired
+	private IDetallePedidoService serviceDetallePedido;
 
 	// Con el metodo GET sin parametros consultamos todos los registros
 	@GetMapping
@@ -195,6 +207,44 @@ public class PedidoController {
 		return "SE ACTUALIZO EL ESTADO A "+mensaje;
 	}
 
+	
+	// REQ 13 hacer un pedido igual a otro
+		@PutMapping("/copiar/{id}")
+		@ResponseStatus(code = HttpStatus.CREATED)
+		public PedidoEntity copiarpedido(@PathVariable Long id) {
+			PedidoEntity tabla = new PedidoEntity();
+			
+			Optional<PedidoEntity> op = service.findById(id);
+
+			if (!op.isEmpty()) {
+				PedidoEntity entidad = op.get();
+				// actualizar cada propiedad
+
+				tabla.setCalificacion(entidad.getCalificacion());
+				tabla.setFecha(entidad.getFecha());
+				tabla.setCosto_envio(entidad.getCosto_envio());
+				tabla.setPago_entrega(entidad.getPago_entrega());
+				tabla.setCliente(entidad.getCliente());
+				tabla.setDomiciliario(entidad.getDomiciliario());
+				tabla.setEstado(entidad.getEstado());
+				tabla.setObservacion(entidad.getObservacion());
+				tabla.setPago_entrega(entidad.getPago_entrega());
+				tabla.setRango_entrega(entidad.getRango_entrega());
+				tabla.setTienda(entidad.getTienda());
+				tabla.setTipo_entrega(entidad.getTipo_entrega());
+				tabla.setTotal_descuento(entidad.getTotal_descuento());
+				tabla.setTotal_impuesto(entidad.getTotal_impuesto());
+				tabla.setTotal_pedido(entidad.getTotal_pedido());
+				
+				
+				PedidoEntity tablarta =  service.save(tabla);
+				serviceDetallePedido.duplicar(id,tablarta.getId());
+				return tablarta;
+			}
+
+			return tabla;
+		}
+		
 	// REQ 15 Poner observacion al pedido
 	@PutMapping("/notas/{id}")
 	public ResponseEntity<?> actualiza(@PathVariable Long id, @RequestParam String mensaje) {
@@ -218,6 +268,30 @@ public class PedidoController {
 		return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
 	}
 
-	
+	// REQ 77 Poner tipo de entrega y tienda
+			@PutMapping("/entregatienda/{id}")
+			public ResponseEntity<?> actualizaTipoEntrega(@PathVariable Long id, @RequestParam("tipoentrega") String mensaje,@RequestParam("tienda") Long tienda) {
+				Map<String, Object> respuesta = new HashMap<>();
+
+				try {
+					Optional<PedidoEntity> op = service.findById(id);
+					Optional<TiendaEntity> optienda = serviceTienda.findById(tienda);
+
+					if (!op.isEmpty()) {
+						PedidoEntity tabla = op.get();
+						// actualizar cada propiedad
+						
+						tabla.setTipo_entrega(mensaje);
+						tabla.setTienda(optienda.get());
+						service.save(tabla);
+					}
+				} catch (DataAccessException e) {
+					respuesta.put("No actualizo", "Paila");
+					return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
+				}
+				respuesta.put("Actualizado", "Se asigno el tipo de entrega");
+				return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
+			}
+
 
 }

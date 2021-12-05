@@ -20,4 +20,7 @@ public interface IDetallePedidoService {
 	//Eliminar por ID
 	public void deleteById(Long id);
 	
+	//REQ 13
+	public int duplicar( Long idpedidoactual,  Long idpedidonuevo );
+	
 }

@@ -70,5 +70,23 @@ public class PedidoService implements IPedidoService{
 		return respuesta;
 	}
 	
+	//REQ 21
+	@Override
+	public List<Map<String, Object>> pedidosAnteriores( Long idcliente ){
+		List<PedidoEntity>  p = this.repository.buscarantiguos(idcliente);
+		
+		for(PedidoEntity mipedido : p)
+		{
+			Map<String, Object> respuesta = new HashMap<>();
+			respuesta.put("Total Compra", mipedido.getTotal_pedido());
+			respuesta.put("Total Descuentos", mipedido.getTotal_descuento());
+			respuesta.put("Total Impuestos", mipedido.getTotal_impuesto());
+			respuesta.put("Costo Aprox Envio", mipedido.getCosto_envio()
+			
+		}
+	
+		return respuesta;
+	}
+	
 
 }

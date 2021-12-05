@@ -32,8 +32,8 @@ public class PagomlController {
 	
 	@GetMapping("/abrirpago")
 	public String crear(@RequestParam("pedido") Long codpedido) throws MPException {
-		//MercadoPago.SDK.setAccessToken("TEST-4977301227552893-120321-305b468b58c465aeaf71683ea9f0460f-24092619");
-		MercadoPago.SDK.setAccessToken("APP_USR-4977301227552893-120321-7fe4e17eb7326410bc0fe09eabe05f1e-24092619");
+		MercadoPago.SDK.setAccessToken("TEST-4977301227552893-120321-305b468b58c465aeaf71683ea9f0460f-24092619");
+		//MercadoPago.SDK.setAccessToken("APP_USR-4977301227552893-120321-7fe4e17eb7326410bc0fe09eabe05f1e-24092619");
 		Preference preferencia = new Preference();
 
 		preferencia.setBackUrls(

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.unab.tienda_a_la_mano.entity.DetallePedidoEntity;
 import com.unab.tienda_a_la_mano.repository.IDetallePedidoRepository;
@@ -35,6 +36,13 @@ public class DetallePedidoService implements IDetallePedidoService{
 	public void deleteById(Long id) {
 		this.repository.deleteById(id);
 		
+	}
+
+	
+	@Override
+	@Transactional
+	public int duplicar(Long idpedidoactual, Long idpedidonuevo) {
+		return repository.duplicar(idpedidoactual, idpedidonuevo);
 	}
 
 }

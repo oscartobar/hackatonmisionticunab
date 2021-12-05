@@ -24,13 +24,14 @@ public interface IPedidoService {
 	public void deleteById(Long id);
 	
 	//REQ 10
-	Long traerPuntos( Long idpedido );
+	public Long traerPuntos( Long idpedido );
 	
 	//REQ 11
-	String traerEstado( int idpedido );
+	public String traerEstado( int idpedido );
 	
 	//REQ 5
-	Map<String, Object> valoresPedido( Long idpedido );
+	public Map<String, Object> valoresPedido( Long idpedido );
 	
-	
+	//REQ 21
+	public List<Map<String, Object>> pedidosAnteriores( Long idcliente );
 }
