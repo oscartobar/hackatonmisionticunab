@@ -29,7 +29,7 @@ import com.unab.tienda_a_la_mano.service.IPedidoService;
 @RequestMapping("api/pedido")
 public class PedidoController {
 
-	// Accedemos a los metodos de la interface de MarcaService
+	// Accedemos a los metodos de la interface 
 	@Autowired
 	private IPedidoService service;
 
@@ -44,19 +44,7 @@ public class PedidoController {
 	public Optional<PedidoEntity> show(@PathVariable Long id) {
 		return service.findById(id);
 	}
-	
-	// ESTE SIRVE CON LA URL
-	@GetMapping("/verestado/{id}")
-	public String mostrarEstado(@PathVariable int id) {
-		return service.traerEstado(id);
-	}
-	
-	// ESTE SIRVE CON PARAMETROS 
-		@GetMapping("/verestado2")
-		public String mostrarEstado2(@RequestParam("id") int id ) {
-			return service.traerEstado(id);
-		}
-
+				
 	// Con el metodo POST creamos los registros
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
@@ -64,31 +52,6 @@ public class PedidoController {
 		return service.save(entidad);
 	}
 
-
-
-	// Con el metodo PUT actualizamos los registros por ID
-	@PutMapping("/notas/{id}")
-	public ResponseEntity<?> actualiza(@PathVariable Long id, @RequestParam String mensaje) {
-		Map<String, Object> respuesta = new HashMap<>();
-		try {
-			Optional<PedidoEntity> op = service.findById(id);
-
-			if (!op.isEmpty()) {
-				PedidoEntity tabla = op.get();
-				// actualizar cada propiedad
-
-				tabla.setObservacion(mensaje);
-
-				service.save(tabla);
-			}
-		} catch (DataAccessException e) {
-			respuesta.put("No actualizo", "Paila");
-			return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
-		}
-		respuesta.put("Actualizado", "Se asigno el mensaje");
-		return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
-
-	}
 
 	// Con el metodo PUT actualizamos los registros por ID
 	@PutMapping("{id}")
@@ -128,5 +91,133 @@ public class PedidoController {
 	public void delete(@PathVariable Long id) {
 		service.deleteById(id);
 	}
+	
+	
+	///////////////////////////
+	//	 REQUERIMIENTOS		///
+	///////////////////////////
+	
+
+
+	
+
+	// REQ 5 Consulta los valores de un pedido 
+	@GetMapping("/consultas/valores")
+	public Map<String, Object> vervalores(@RequestParam("id") Long id ) {
+		return service.valoresPedido(id);
+	}
+
+	// REQ 6 Poner tipo de entrega
+		@PutMapping("/entrega/{id}")
+		public ResponseEntity<?> actualizaTipoEntrega(@PathVariable Long id, @RequestParam("tipoentrega") String mensaje) {
+			Map<String, Object> respuesta = new HashMap<>();
+			try {
+				Optional<PedidoEntity> op = service.findById(id);
+
+				if (!op.isEmpty()) {
+					PedidoEntity tabla = op.get();
+					// actualizar cada propiedad
+
+					tabla.setTipo_entrega(mensaje);
+
+					service.save(tabla);
+				}
+			} catch (DataAccessException e) {
+				respuesta.put("No actualizo", "Paila");
+				return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
+			}
+			respuesta.put("Actualizado", "Se asigno el tipo de entrega");
+			return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
+		}
+
+		// REQ 10 Enviar pedido
+		@PutMapping("/entregar/{id}")
+		public ResponseEntity<?> enviarPedido(@PathVariable Long id) {
+			PedidoEntity tabla;
+			Map<String, Object> respuesta = new HashMap<>();
+			try {
+				Optional<PedidoEntity> op = service.findById(id);
+
+				if (!op.isEmpty()) {
+					tabla = op.get();
+					// actualizar cada propiedad
+
+					tabla.setEstado("ENVIADO");
+
+					service.save(tabla);
+				}
+			} catch (DataAccessException e) {
+				respuesta.put("No actualizo", "Paila");
+				return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
+			}
+			respuesta.put("Enviado", "Ud gano "+ String.valueOf( service.traerPuntos(id) ) +" puntos por este pedido");
+			return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
+		}
+		
+				
+	// REQ 11  ver estado del pedido
+	@GetMapping("/consultas/verestado/{id}")
+	public String mostrarEstado(@PathVariable int id) {
+		return service.traerEstado(id);
+	}
+	
+	// REQ 11  ESTE SIRVE CON PARAMETROS 
+	@GetMapping("/consultas/verestado2")
+	public String mostrarEstado2(@RequestParam("id") int id ) {
+		return service.traerEstado(id);
+	}
+
+	// REQ 12  Cancelar pedido
+	@PutMapping("/cancelar/{id}")
+	public String cancelar(@PathVariable Long id ,@RequestParam("estado") String mensaje) {
+		
+		try {
+			Optional<PedidoEntity> op = service.findById(id);
+
+			if (!op.isEmpty()) {
+				PedidoEntity tabla = op.get();
+				
+				if (!tabla.getEstado().equals("ENVIADO"))
+				{
+					tabla.setEstado(mensaje);
+
+					service.save(tabla);
+				}
+				else
+				{
+					return "NO SE PUEDE CAMBIAR EL ESTADO. EL PEDIDO YA SE ENVIO";
+				}
+			}
+		} catch (DataAccessException e) {
+			return "ERROR AL CAMBIAR DE ESTADO";
+		}
+		
+		return "SE ACTUALIZO EL ESTADO A "+mensaje;
+	}
+
+	// REQ 15 Poner observacion al pedido
+	@PutMapping("/notas/{id}")
+	public ResponseEntity<?> actualiza(@PathVariable Long id, @RequestParam String mensaje) {
+		Map<String, Object> respuesta = new HashMap<>();
+		try {
+			Optional<PedidoEntity> op = service.findById(id);
+
+			if (!op.isEmpty()) {
+				PedidoEntity tabla = op.get();
+				// actualizar cada propiedad
+
+				tabla.setObservacion(mensaje);
+
+				service.save(tabla);
+			}
+		} catch (DataAccessException e) {
+			respuesta.put("No actualizo", "Paila");
+			return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
+		}
+		respuesta.put("Actualizado", "Se asigno el mensaje");
+		return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
+	}
+
+	
 
 }
