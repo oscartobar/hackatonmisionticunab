@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unab.tienda_a_la_mano.entity.DetallePedidoEntity;
-
+import com.unab.tienda_a_la_mano.entity.PedidoEntity;
 import com.unab.tienda_a_la_mano.entity.TiendaEntity;
 import com.unab.tienda_a_la_mano.service.IDetallePedidoService;
 
@@ -92,6 +92,31 @@ public class DetallePedidoController {
 		///////////////////////////
 		//	 REQUERIMIENTOS		///
 		///////////////////////////
+		
+		
+		// REQ 4 disminuir cantidad
+		@PutMapping("/disminuir/{id}")
+		public ResponseEntity<?> actualizaTipoEntrega(@PathVariable Long id, @RequestParam("cantidad") double mensaje) {
+			Map<String, Object> respuesta = new HashMap<>();
+			try {
+				Optional<DetallePedidoEntity> op = service.findById(id);
+
+				if (!op.isEmpty()) {
+					DetallePedidoEntity tabla = op.get();
+					// actualizar cada propiedad
+
+					tabla.setCantidad(mensaje);
+
+					service.save(tabla);
+				}
+			} catch (DataAccessException e) {
+				respuesta.put("No actualizo", "Paila");
+				return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
+			}
+			respuesta.put("Actualizado", "Se asigno la cantidad");
+			return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
+		}
+		
 		
 
 		

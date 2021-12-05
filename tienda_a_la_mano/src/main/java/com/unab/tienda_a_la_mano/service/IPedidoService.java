@@ -34,4 +34,8 @@ public interface IPedidoService {
 	
 	//REQ 21
 	//public List<Map<String, Object>> pedidosAnteriores( Long idcliente );
+	
+	//
+	//Listar Activos
+	public List<PedidoEntity> seleccionarxEstado(String filtro );
 }

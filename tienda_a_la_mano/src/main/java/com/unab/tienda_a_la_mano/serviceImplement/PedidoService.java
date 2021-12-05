@@ -69,6 +69,11 @@ public class PedidoService implements IPedidoService{
 		respuesta.put("Costo Aprox Envio", p.getCosto_envio());
 		return respuesta;
 	}
+
+	@Override
+	public List<PedidoEntity> seleccionarxEstado(String filtro) {
+		return this.repository.seleccionarxEstado(filtro);
+	}
 	
 	//REQ 21
 	/*

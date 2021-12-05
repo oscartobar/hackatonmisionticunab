@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unab.tienda_a_la_mano.entity.DomiciliarioEntity;
 import com.unab.tienda_a_la_mano.entity.PedidoEntity;
 import com.unab.tienda_a_la_mano.entity.TiendaEntity;
 import com.unab.tienda_a_la_mano.service.IDetallePedidoService;
+import com.unab.tienda_a_la_mano.service.IDomiciliarioService;
 import com.unab.tienda_a_la_mano.service.IPedidoService;
 import com.unab.tienda_a_la_mano.service.ITiendaService;
 
@@ -39,6 +41,10 @@ public class PedidoController {
 	
 	@Autowired
 	private ITiendaService serviceTienda;
+	
+	@Autowired
+	private IDomiciliarioService serviceDom;
+
 
 	@Autowired
 	private IDetallePedidoService serviceDetallePedido;
@@ -266,6 +272,68 @@ public class PedidoController {
 		return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
 	}
 
+	
+	// REQ 47 Poner domiciliario al pedido
+	@PutMapping("/domi/{id}")
+	public ResponseEntity<?> actualizadomi(@PathVariable Long id, @RequestParam("domiciliario") Long mensaje) {
+		Map<String, Object> respuesta = new HashMap<>();
+		
+		Optional<DomiciliarioEntity> opdomiciliario = serviceDom.findById(mensaje);
+
+		
+		try {
+			Optional<PedidoEntity> op = service.findById(id);
+
+			if (!op.isEmpty()) {
+				PedidoEntity tabla = op.get();
+				// actualizar cada propiedad
+
+				tabla.setDomiciliario(opdomiciliario.get() );
+
+				service.save(tabla);
+			}
+		} catch (DataAccessException e) {
+			respuesta.put("No actualizo", "Paila");
+			return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
+		}
+		respuesta.put("Actualizado", "Se asigno el domiciliario");
+		return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
+	}
+	
+	
+	//REQ 51 
+	@GetMapping("/consultas/activos")
+	public List<PedidoEntity> veractivos(@RequestParam("estado") String estado ) {
+		return service.seleccionarxEstado(estado);
+	}
+	
+	// REQ 42 Poner tienda al pedido
+	@PutMapping("/tienda/{id}")
+	public ResponseEntity<?> actualizatienda(@PathVariable Long id, @RequestParam("tienda") Long mensaje) {
+		Map<String, Object> respuesta = new HashMap<>();
+		
+		Optional<TiendaEntity> optienda = serviceTienda.findById(mensaje);
+
+		
+		try {
+			Optional<PedidoEntity> op = service.findById(id);
+
+			if (!op.isEmpty()) {
+				PedidoEntity tabla = op.get();
+				// actualizar cada propiedad
+
+				tabla.setTienda(optienda.get());
+
+				service.save(tabla);
+			}
+		} catch (DataAccessException e) {
+			respuesta.put("No actualizo", "Paila");
+			return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
+		}
+		respuesta.put("Actualizado", "Se asigno la tienda");
+		return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
+	}
+	
 	// REQ 77 Poner tipo de entrega y tienda
 			@PutMapping("/entregatienda/{id}")
 			public ResponseEntity<?> actualizaTipoEntrega(@PathVariable Long id, @RequestParam("tipoentrega") String mensaje,@RequestParam("tienda") Long tienda) {
