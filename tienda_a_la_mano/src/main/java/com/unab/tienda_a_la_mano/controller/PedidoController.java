@@ -77,6 +77,7 @@ public class PedidoController {
 
 		if (!op.isEmpty()) {
 			PedidoEntity tabla = op.get();
+<<<<<<< HEAD
 			// actualizar cada propiedad
 
 			tabla.setCalificacion(entidad.getCalificacion());
@@ -91,6 +92,7 @@ public class PedidoController {
 			tabla.setRango_entrega(entidad.getRango_entrega());
 			tabla.setTienda(entidad.getTienda());
 			tabla.setTipo_entrega(entidad.getTipo_entrega());
+
 			tabla.setTotal_descuento(entidad.getTotal_descuento());
 			tabla.setTotal_impuesto(entidad.getTotal_impuesto());
 			tabla.setTotal_pedido(entidad.getTotal_pedido());
