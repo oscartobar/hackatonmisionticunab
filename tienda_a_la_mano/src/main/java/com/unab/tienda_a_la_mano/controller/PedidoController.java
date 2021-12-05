@@ -77,7 +77,6 @@ public class PedidoController {
 
 		if (!op.isEmpty()) {
 			PedidoEntity tabla = op.get();
-<<<<<<< HEAD
 			// actualizar cada propiedad
 
 			tabla.setCalificacion(entidad.getCalificacion());
