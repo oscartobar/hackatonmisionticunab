@@ -37,4 +37,10 @@ public class PedidoService implements IPedidoService{
 		
 	}
 
+	@Override
+	public String traerEstado(int idpedido) {
+		
+		return repository.traerEstado(idpedido);
+	}
+
 }

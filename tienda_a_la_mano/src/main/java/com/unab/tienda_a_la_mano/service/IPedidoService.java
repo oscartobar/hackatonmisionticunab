@@ -3,6 +3,8 @@ package com.unab.tienda_a_la_mano.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.repository.query.Param;
+
 import com.unab.tienda_a_la_mano.entity.PedidoEntity;
 
 
@@ -19,4 +21,7 @@ public interface IPedidoService {
 
 	//Eliminar por ID
 	public void deleteById(Long id);
+	
+	String traerEstado( int idpedido );
+	
 }

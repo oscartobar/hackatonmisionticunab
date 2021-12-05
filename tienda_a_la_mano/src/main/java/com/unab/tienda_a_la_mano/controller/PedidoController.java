@@ -1,10 +1,14 @@
 package com.unab.tienda_a_la_mano.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,66 +29,104 @@ import com.unab.tienda_a_la_mano.service.IPedidoService;
 @RequestMapping("api/pedido")
 public class PedidoController {
 
-	//Accedemos a los metodos de la interface de MarcaService
+	// Accedemos a los metodos de la interface de MarcaService
 	@Autowired
 	private IPedidoService service;
-	
-	//Con el metodo GET sin parametros consultamos todos los registros
+
+	// Con el metodo GET sin parametros consultamos todos los registros
 	@GetMapping
-	public List<PedidoEntity> all(){
+	public List<PedidoEntity> all() {
 		return service.all();
 	}
-	
-	//Con el metodo GET con parametros consultamos los registros por ID
+
+	// Con el metodo GET con parametros consultamos los registros por ID
 	@GetMapping("{id}")
-	public Optional<PedidoEntity> show(@PathVariable Long id){
+	public Optional<PedidoEntity> show(@PathVariable Long id) {
 		return service.findById(id);
 	}
 	
-	//Con el metodo POST creamos los registros
-	@PostMapping
-	@ResponseStatus(code = HttpStatus.CREATED)
-	public PedidoEntity save (@RequestBody PedidoEntity entidad) {
-		return service.save(entidad);
+	// ESTE SIRVE CON LA URL
+	@GetMapping("/verestado/{id}")
+	public String mostrarEstado(@PathVariable int id) {
+		return service.traerEstado(id);
 	}
 	
-	//Con el metodo PUT actualizamos los registros por ID
+	// ESTE SIRVE CON PARAMETROS 
+		@GetMapping("/verestado2")
+		public String mostrarEstado2(@RequestParam("id") int id ) {
+			return service.traerEstado(id);
+		}
+
+	// Con el metodo POST creamos los registros
+	@PostMapping
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public PedidoEntity save(@RequestBody PedidoEntity entidad) {
+		return service.save(entidad);
+	}
+
+
+
+	// Con el metodo PUT actualizamos los registros por ID
+	@PutMapping("/notas/{id}")
+	public ResponseEntity<?> actualiza(@PathVariable Long id, @RequestParam String mensaje) {
+		Map<String, Object> respuesta = new HashMap<>();
+		try {
+			Optional<PedidoEntity> op = service.findById(id);
+
+			if (!op.isEmpty()) {
+				PedidoEntity tabla = op.get();
+				// actualizar cada propiedad
+
+				tabla.setObservacion(mensaje);
+
+				service.save(tabla);
+			}
+		} catch (DataAccessException e) {
+			respuesta.put("No actualizo", "Paila");
+			return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.NOT_ACCEPTABLE);
+		}
+		respuesta.put("Actualizado", "Se asigno el mensaje");
+		return new ResponseEntity<Map<String, Object>>(respuesta, HttpStatus.OK);
+
+	}
+
+	// Con el metodo PUT actualizamos los registros por ID
 	@PutMapping("{id}")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public PedidoEntity update(@PathVariable Long id, @RequestBody PedidoEntity entidad) {
 		Optional<PedidoEntity> op = service.findById(id);
-		
+
 		if (!op.isEmpty()) {
 			PedidoEntity tabla = op.get();
-			//actualizar cada propiedad
-			
-			tabla.setCalificacion	(entidad.getCalificacion());
-			tabla.setFecha			(entidad.getFecha());
-			tabla.setCosto_envio	(entidad.getCosto_envio());
-			tabla.setPago_entrega	(entidad.getPago_entrega());
-			tabla.setCliente		(entidad.getCliente());
-			tabla.setDomiciliario	(entidad.getDomiciliario());
-			tabla.setEstado			(entidad.getEstado());
-			tabla.setObservacion	(entidad.getObservacion());
-			tabla.setPago_entrega	(entidad.getPago_entrega());
-			tabla.setRango_entrega	(entidad.getRango_entrega());
-			tabla.setTienda			(entidad.getTienda());
-			tabla.setTipo_entrega	(entidad.getTipo_entrega());
+			// actualizar cada propiedad
+
+			tabla.setCalificacion(entidad.getCalificacion());
+			tabla.setFecha(entidad.getFecha());
+			tabla.setCosto_envio(entidad.getCosto_envio());
+			tabla.setPago_entrega(entidad.getPago_entrega());
+			tabla.setCliente(entidad.getCliente());
+			tabla.setDomiciliario(entidad.getDomiciliario());
+			tabla.setEstado(entidad.getEstado());
+			tabla.setObservacion(entidad.getObservacion());
+			tabla.setPago_entrega(entidad.getPago_entrega());
+			tabla.setRango_entrega(entidad.getRango_entrega());
+			tabla.setTienda(entidad.getTienda());
+			tabla.setTipo_entrega(entidad.getTipo_entrega());
 			tabla.setTotal_descuento(entidad.getTotal_descuento());
-			tabla.setTotal_impuesto	(entidad.getTotal_impuesto());
-			tabla.setTotal_pedido	(entidad.getTotal_pedido());
-			
-			return service.save(tabla);	
+			tabla.setTotal_impuesto(entidad.getTotal_impuesto());
+			tabla.setTotal_pedido(entidad.getTotal_pedido());
+
+			return service.save(tabla);
 		}
-		
+
 		return entidad;
 	}
-	
-	//Con el metodo DELETE eliminamos los registros por ID
+
+	// Con el metodo DELETE eliminamos los registros por ID
 	@DeleteMapping("{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	public void delete(@PathVariable Long id) {
 		service.deleteById(id);
 	}
-	
+
 }
